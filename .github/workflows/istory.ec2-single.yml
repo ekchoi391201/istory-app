@@ -14,7 +14,7 @@ on:
       - '.github/workflows/ec2-single-deploy.yml'
       - 'scripts/**'
       - 'appspec.yml'
-      - 'src/*'
+      - 'src/**'
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
