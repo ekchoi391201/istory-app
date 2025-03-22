@@ -9,12 +9,12 @@ permissions:
 on:
   push:
     branches: [ "main"]
-    paths:
-      - 'xinfra/ec2-scaling/**'
-      - '.github/workflows/isotry-ec2-scaling.ymll'
-      - 'scripts/**'
-      - 'appspec.yml'
-      - 'src/**'
+    # paths:
+    #   - 'xinfra/ec2-scaling/**'
+    #   - '.github/workflows/isotry-ec2-scaling.ymll'
+    #   - 'scripts/**'
+    #   - 'appspec.yml'
+    #   - 'src/**'
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
