@@ -9,10 +9,34 @@ export SERVER_PORT=8080
 export JAVA_OPTS="-Xms512m -Xmx1024m"
 
 # 이전 프로세스 종료 (혹시 모를 중복 실행 방지)
+# if [ -f /home/ec2-user/app/pid.file ]; then
+#     pid=$(cat /home/ec2-user/app/pid.file)
+#     kill -9 $pid || true
+#     rm /home/ec2-user/app/pid.file
+# fi
+
+# 수정 코드
+
 if [ -f /home/ec2-user/app/pid.file ]; then
     pid=$(cat /home/ec2-user/app/pid.file)
-    kill -9 $pid || true
-    rm /home/ec2-user/app/pid.file
+
+    # PID가 실제로 실행 중인지 확인
+    if ps -p $pid > /dev/null 2>&1; then
+        echo "Process $pid found. Trying to kill..."
+
+        # 일반적인 kill 시도
+        sudo kill -9 $pid || \
+        # nsenter로 강제 종료 시도 (네임스페이스 문제 해결)
+        sudo nsenter --target $pid --mount --uts --ipc --net --pid kill -9 $pid || \
+        # 그래도 안 죽으면 /proc에서 강제 제거
+        sudo rm -rf /proc/$pid || \
+        echo "Failed to kill process $pid"
+    else
+        echo "No running process with PID $pid"
+    fi
+
+    # pid 파일 삭제
+    rm -f /home/ec2-user/app/pid.file
 fi
 
 # 애플리케이션 시작
